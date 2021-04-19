@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "651996831534",
+    "project_id": "meme-app-c5ae7",
+    "storage_bucket": "meme-app-c5ae7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:651996831534:android:8a03a3662fe6e7ee93a4bf",
+        "android_client_info": {
+          "package_name": "com.example.mymemeapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "651996831534-3ln1k3it4ngv91tc6q1ngs746kal6cot.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5ybFskh_SYHDYYdsTFDS4ZeHmC2OLaP4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "651996831534-3ln1k3it4ngv91tc6q1ngs746kal6cot.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "651996831534-1cqji8ivpdjmeuu05kbcl6j4tlv6m462.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.consumers.flutterApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
