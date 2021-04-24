@@ -5,4 +5,45 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="12dp"
-    tools:context=".MainActivity" />
+    tools:context=".MainActivity" >
+
+    <Button
+        android:id="@+id/loginUsingPhoneNumber"
+        android:layout_width="wrap_content"
+        android:padding="8dp"
+        android:layout_height="wrap_content"
+        android:drawableStart="@drawable/ic_baseline_local_phone_24"
+        android:paddingStart="15dp"
+        android:text="Login Using Phone Number"
+        android:textSize="14sp"
+        android:background="@drawable/background"
+        android:drawablePadding="8dp"
+        android:textColor="#000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.532"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.411" />
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="11dp"
+        android:layout_marginEnd="12dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loginUsingPhoneNumber" />
+
+    <com.google.android.gms.common.SignInButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/signInWithGoogle"
+        android:layout_marginTop="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view" />
+</androidx.constraintlayout.widget.ConstraintLayout>
