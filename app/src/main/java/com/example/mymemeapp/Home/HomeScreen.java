@@ -1,9 +1,14 @@
 package com.example.mymemeapp.Home;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -12,6 +17,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -32,6 +38,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.developer.kalert.KAlertDialog;
 import com.example.mymemeapp.MainActivity;
 import com.example.mymemeapp.R;
 import com.squareup.picasso.MemoryPolicy;
@@ -72,6 +79,8 @@ public class HomeScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
         initialise();
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
         imageView.setDrawingCacheEnabled(true);
         imageView.buildDrawingCache();
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -113,53 +122,38 @@ public class HomeScreen extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-//                Log.d("id", uuid+"");
-//                View content = findViewById(R.id.loadMemeImage);
-//                content.setDrawingCacheEnabled(true);
-//
-//                Bitmap bitmap = content.getDrawingCache();
-//                File root = Environment.getExternalStorageDirectory();
-//                File cachePath = new File(root.getAbsolutePath() + "/DCIM/Camera/" + UUID.randomUUID().toString() + ".jpg");
-//                try {
-//                    cachePath.createNewFile();
-//                    FileOutputStream ostream = new FileOutputStream(cachePath);
-//                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
-//                    ostream.close();
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//
-//                Intent share = new Intent(Intent.ACTION_SEND);
-//                share.setType("image/*");
-//                share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(cachePath));
-//                startActivity(Intent.createChooser(share,"Share via"));
+                if(ContextCompat.checkSelfPermission(HomeScreen.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+                {
+                    ActivityCompat.requestPermissions(HomeScreen.this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE},1);
+                }else {
 
-                BitmapDrawable bitmapDrawable = (BitmapDrawable) imageView.getDrawable();
-                Bitmap bitmap = bitmapDrawable.getBitmap();
 
-                File filepath = Environment.getExternalStorageDirectory();
-                File dir = new File(filepath.getAbsolutePath());
-                dir.mkdir();
-                File file = new File(dir,System.currentTimeMillis() + ".jpg");
-                try {
-                    outputStream = new FileOutputStream(file);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
+                    BitmapDrawable bitmapDrawable = (BitmapDrawable) imageView.getDrawable();
+                    Bitmap bitmap = bitmapDrawable.getBitmap();
+
+                    File filepath = Environment.getExternalStorageDirectory();
+                    File dir = new File(filepath.getAbsolutePath());
+                    dir.mkdir();
+                    File file = new File(dir, System.currentTimeMillis() + ".jpg");
+                    try {
+                        outputStream = new FileOutputStream(file);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+                    try {
+                        outputStream.flush();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    Intent share = new Intent(Intent.ACTION_SEND);
+                    share.setType("image/*");
+                    share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
+                    startActivity(Intent.createChooser(share, "Share via"));
+
                 }
-
-                bitmap.compress(Bitmap.CompressFormat.JPEG,100,outputStream);
-                try {
-                    outputStream.flush();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                Intent share = new Intent(Intent.ACTION_SEND);
-                share.setType("image/*");
-                share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
-                startActivity(Intent.createChooser(share,"Share via"));
-
-
 
             }
 
@@ -197,6 +191,34 @@ public class HomeScreen extends AppCompatActivity {
         });
 
         requestQueue.add(jsonObjectRequest);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == 1){
+            if(grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
+            else{
+                new KAlertDialog(HomeScreen.this,KAlertDialog.ERROR_TYPE)
+                        .setTitleText("Permission Required")
+                        .setContentText("Without Storage Permission You can't share memes\nWanna provide permission??")
+                        .setConfirmText("Yes")
+                        .setCancelText("No")
+                        .setConfirmClickListener(new KAlertDialog.KAlertClickListener() {
+                            @Override
+                            public void onClick(KAlertDialog kAlertDialog) {
+                                ActivityCompat.requestPermissions(HomeScreen.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
+                                kAlertDialog.dismissWithAnimation();
+                            }
+                        }).setCancelClickListener(new KAlertDialog.KAlertClickListener() {
+                    @Override
+                    public void onClick(KAlertDialog kAlertDialog) {
+                        kAlertDialog.dismissWithAnimation();
+                    }
+                }).show();
+            }
+        }
     }
 
     private void initialise() {
