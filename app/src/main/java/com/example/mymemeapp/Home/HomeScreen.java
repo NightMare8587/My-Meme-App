@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -27,6 +28,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
@@ -42,9 +44,11 @@ import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -59,6 +63,7 @@ public class HomeScreen extends AppCompatActivity {
     URL URL;
     String uuid;
     LinearLayout linearLayout;
+    OutputStream outputStream;
     ImageView imageView;
     AsyncTask myTask;
     String url = "https://meme-api.herokuapp.com/gimme";
@@ -67,6 +72,8 @@ public class HomeScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
         initialise();
+        imageView.setDrawingCacheEnabled(true);
+        imageView.buildDrawingCache();
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -77,7 +84,8 @@ public class HomeScreen extends AppCompatActivity {
                     JSONArray array = jsonObject.getJSONArray("preview");
                     my = (String) array.get(array.length()-1);
 
-                    Glide.with(HomeScreen.this).load(my).into(imageView);
+                    Glide.with(HomeScreen.this).load(my).diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(true).into(imageView);
 //                    Picasso.get().load(my).memoryPolicy(MemoryPolicy.NO_CACHE,MemoryPolicy.NO_STORE)
 //                            .networkPolicy(NetworkPolicy.NO_CACHE,NetworkPolicy.NO_STORE).into(imageView);
                     linearLayout.setVisibility(View.VISIBLE);
@@ -105,27 +113,53 @@ public class HomeScreen extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                uuid = UUID.randomUUID().toString();
-                Log.d("id", uuid+"");
-                View content = findViewById(R.id.loadMemeImage);
-                content.setDrawingCacheEnabled(true);
+//                Log.d("id", uuid+"");
+//                View content = findViewById(R.id.loadMemeImage);
+//                content.setDrawingCacheEnabled(true);
+//
+//                Bitmap bitmap = content.getDrawingCache();
+//                File root = Environment.getExternalStorageDirectory();
+//                File cachePath = new File(root.getAbsolutePath() + "/DCIM/Camera/" + UUID.randomUUID().toString() + ".jpg");
+//                try {
+//                    cachePath.createNewFile();
+//                    FileOutputStream ostream = new FileOutputStream(cachePath);
+//                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
+//                    ostream.close();
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//
+//                Intent share = new Intent(Intent.ACTION_SEND);
+//                share.setType("image/*");
+//                share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(cachePath));
+//                startActivity(Intent.createChooser(share,"Share via"));
 
-                Bitmap bitmap = content.getDrawingCache();
-                File root = Environment.getExternalStorageDirectory();
-                File cachePath = new File(root.getAbsolutePath() + "/DCIM/Camera/" + uuid + ".jpg");
+                BitmapDrawable bitmapDrawable = (BitmapDrawable) imageView.getDrawable();
+                Bitmap bitmap = bitmapDrawable.getBitmap();
+
+                File filepath = Environment.getExternalStorageDirectory();
+                File dir = new File(filepath.getAbsolutePath());
+                dir.mkdir();
+                File file = new File(dir,System.currentTimeMillis() + ".jpg");
                 try {
-                    cachePath.createNewFile();
-                    FileOutputStream ostream = new FileOutputStream(cachePath);
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
-                    ostream.close();
-                } catch (Exception e) {
+                    outputStream = new FileOutputStream(file);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                bitmap.compress(Bitmap.CompressFormat.JPEG,100,outputStream);
+                try {
+                    outputStream.flush();
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
 
                 Intent share = new Intent(Intent.ACTION_SEND);
                 share.setType("image/*");
-                share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(cachePath));
+                share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
                 startActivity(Intent.createChooser(share,"Share via"));
+
+
 
             }
 
@@ -145,7 +179,8 @@ public class HomeScreen extends AppCompatActivity {
                     JSONObject jsonObject = new JSONObject(response.toString());
                     JSONArray array = jsonObject.getJSONArray("preview");
                     my = (String) array.get(array.length()-1);
-                    Glide.with(HomeScreen.this).load(my).into(imageView);
+                    Glide.with(HomeScreen.this).load(my).diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(true).into(imageView);
 //                    Picasso.get().load(my).memoryPolicy(MemoryPolicy.NO_CACHE)
 //                            .networkPolicy(NetworkPolicy.NO_CACHE).into(imageView);
                     linearLayout.setVisibility(View.VISIBLE);
