@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -66,11 +67,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         sharedPreferences = getSharedPreferences("AccountInfo",MODE_PRIVATE);
         editor = sharedPreferences.edit();
         if(currentUser != null){
             startActivity(new Intent(this,HomeScreen.class));
+            finish();
         }
         initialise();
         loginUsingNum.setOnClickListener(new View.OnClickListener() {
