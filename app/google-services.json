@@ -1,18 +1,27 @@
 {
   "project_info": {
     "project_number": "651996831534",
+    "firebase_url": "https://meme-app-c5ae7-default-rtdb.firebaseio.com",
     "project_id": "meme-app-c5ae7",
     "storage_bucket": "meme-app-c5ae7.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:651996831534:android:8a03a3662fe6e7ee93a4bf",
+        "mobilesdk_app_id": "1:651996831534:android:877588b3dd82513e93a4bf",
         "android_client_info": {
-          "package_name": "com.example.mymemeapp"
+          "package_name": "com.consumers.mymemeapp"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "651996831534-af70b9p880c8c3mgjslh259l8gkdrusd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.consumers.mymemeapp",
+            "certificate_hash": "5078284dc58db754eb15270db0bae67bfd1e74a4"
+          }
+        },
         {
           "client_id": "651996831534-3ln1k3it4ngv91tc6q1ngs746kal6cot.apps.googleusercontent.com",
           "client_type": 3

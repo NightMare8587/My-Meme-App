@@ -8,7 +8,7 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.example.mymemeapp"
+        applicationId "com.consumers.mymemeapp"
         minSdkVersion 22
         targetSdkVersion 30
         versionCode 1
