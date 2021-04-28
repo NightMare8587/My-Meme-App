@@ -17,7 +17,7 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/funny"
-        android:label="@string/app_name"
+        android:label="Meme App"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
