@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "651996831534-5os6s3s7sle9kavm3fep71feuridgir8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.consumers.mymemeapp",
+            "certificate_hash": "b62395d1c6afbe0a4ed799574d4f2ebf62a32e27"
+          }
+        },
+        {
           "client_id": "651996831534-af70b9p880c8c3mgjslh259l8gkdrusd.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
